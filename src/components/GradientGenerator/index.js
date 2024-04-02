@@ -3,15 +3,16 @@ import {Component} from 'react'
 import GradientDirectionItem from '../GradientDirectionItem'
 
 import {
-  GradientAppContainer,
-  GradientResponse,
+  GradientGeneratorContainer,
+  ResponsiveContainer,
   Heading,
-  Paragraph,
-  ListMenu,
-  InputColor,
-  InputLabel,
-  ColorPickContainer,
-  ColorInputAndLabelContainer,
+  DirectionsDescription,
+  GradientDirectionList,
+  ColorsPickersDescription,
+  ColorPickerContainer,
+  CustomInputAndColorContainer,
+  ColorValue,
+  CustomInput,
   GenerateButton,
 } from './styledComponents'
 
@@ -21,19 +22,19 @@ const gradientDirectionsList = [
   {directionId: 'RIGHT', value: 'right', displayText: 'Right'},
   {directionId: 'LEFT', value: 'left', displayText: 'Left'},
 ]
-// Write your code here
+
 class GradientGenerator extends Component {
   state = {
-    activeGradientId: gradientDirectionsList[0].value,
+    activeGradientDirection: gradientDirectionsList[0].value,
     fromColorInput: '#8ae323',
     toColorInput: '#014f7b',
-    gradientDirection: `to ${gradientDirectionsList[0].value}, #8ae323, #014f7b`,
+    gradientValue: `to ${gradientDirectionsList[0].value}, #8ae323, #014f7b`,
   }
 
   onGenerate = () => {
-    const {activeGradientId, fromColorInput, toColorInput} = this.state
+    const {fromColorInput, toColorInput, activeGradientDirection} = this.state
     this.setState({
-      gradientDirection: `to ${activeGradientId}, ${fromColorInput}, ${toColorInput}`,
+      gradientValue: `to ${activeGradientDirection}, ${fromColorInput}, ${toColorInput}`,
     })
   }
 
@@ -46,59 +47,57 @@ class GradientGenerator extends Component {
   }
 
   clickGradientDirectionItem = direction => {
-    this.setState({activeGradientId: direction})
+    this.setState({activeGradientDirection: direction})
   }
 
   render() {
     const {
+      activeGradientDirection,
       fromColorInput,
       toColorInput,
-      activeGradientId,
-      gradientDirection,
+      gradientValue,
     } = this.state
 
     return (
-      <GradientAppContainer
+      <GradientGeneratorContainer
         data-testid="gradientGenerator"
-        gradientDirection={gradientDirection}
+        gradientValue={gradientValue}
       >
-        <GradientResponse>
+        <ResponsiveContainer>
           <Heading>Generate a CSS Color Gradient</Heading>
-          <Paragraph>Choose Direction</Paragraph>
-          <ListMenu>
+          <DirectionsDescription>Choose Direction</DirectionsDescription>
+          <GradientDirectionList>
             {gradientDirectionsList.map(eachDirection => (
               <GradientDirectionItem
                 key={eachDirection.directionId}
-                directionDetails={eachDirection}
+                gradientDirectionDetails={eachDirection}
                 clickGradientDirectionItem={this.clickGradientDirectionItem}
-                isActive={activeGradientId === eachDirection.value}
+                isActive={activeGradientDirection === eachDirection.value}
               />
             ))}
-          </ListMenu>
-          <Paragraph>pick the Colors</Paragraph>
-          <ColorPickContainer>
-            <ColorInputAndLabelContainer>
-              <InputLabel>{fromColorInput}</InputLabel>
-              <InputColor
-                type="color"
-                value={fromColorInput}
+          </GradientDirectionList>
+          <ColorsPickersDescription>Pick the Colors</ColorsPickersDescription>
+          <ColorPickerContainer>
+            <CustomInputAndColorContainer>
+              <ColorValue>{fromColorInput}</ColorValue>
+              <CustomInput
                 onChange={this.onChangeFromColor}
-              />
-            </ColorInputAndLabelContainer>
-            <ColorInputAndLabelContainer>
-              <InputLabel>{toColorInput}</InputLabel>
-              <InputColor
+                value={fromColorInput}
                 type="color"
-                value={toColorInput}
-                onChange={this.onChangeToColor}
               />
-            </ColorInputAndLabelContainer>
-          </ColorPickContainer>
-          <GenerateButton type="button" onClick={this.onGenerate}>
-            Generate
-          </GenerateButton>
-        </GradientResponse>
-      </GradientAppContainer>
+            </CustomInputAndColorContainer>
+            <CustomInputAndColorContainer>
+              <ColorValue>{toColorInput}</ColorValue>
+              <CustomInput
+                onChange={this.onChangeToColor}
+                value={toColorInput}
+                type="color"
+              />
+            </CustomInputAndColorContainer>
+          </ColorPickerContainer>
+          <GenerateButton onClick={this.onGenerate}>Generate</GenerateButton>
+        </ResponsiveContainer>
+      </GradientGeneratorContainer>
     )
   }
 }
